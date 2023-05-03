@@ -1,0 +1,14 @@
+{
+  "name": "calculator-fran-ceballos",
+  "version": "1.0.0",
+  "description": "JavaScript Calculator",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Francisco Ceballos",
+  "license": "ISC",
+  "dependencies": {
+    "sass": "^1.59.2"
+  }
+}
