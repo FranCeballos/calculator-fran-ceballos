@@ -6,7 +6,7 @@ const clearBtn = document.getElementById("clear");
 
 class App {
   currentValue;
-  newValue = 0;
+  newValue = "0";
   constructor() {
     this._listenButtons();
   }
@@ -19,7 +19,7 @@ class App {
 
   handleButtonClick(e) {
     const inputValue = e.target.dataset.value;
-    if (!isNaN(inputValue) && !this.newValue) {
+    if (!isNaN(inputValue) && this.newValue === "0") {
       this.newValue = inputValue;
       this.update();
       return;
@@ -29,32 +29,39 @@ class App {
       this.update();
       return;
     }
-    if (inputValue === "clear") {
-      this.clearCurrentNumber();
-    }
-    if (inputValue === "sign") {
-      this.changeNumberSign();
+    switch (inputValue) {
+      case "clear":
+        this.clearCurrentNumber();
+        break;
+      case "sign":
+        this.changeNumberSign();
+        break;
+      case ".":
+        this.addDecimalDot();
+        break;
     }
   }
 
   update() {
     display.innerText = this.newValue;
-
-    if (this.newValue !== 0) {
-      this.changeButtonACtoC();
-    } else {
-      this.changeButtonCtoAC();
-    }
+    this.newValue !== "0" ? this.changeButtonACtoC() : this.changeButtonCtoAC();
   }
 
   clearCurrentNumber() {
-    this.newValue = 0;
+    this.newValue = "0";
     this.update();
   }
 
   changeNumberSign() {
     this.newValue = `${parseInt(this.newValue) * -1}`;
     this.update();
+  }
+
+  addDecimalDot() {
+    if (!this.newValue.split("").includes(".")) {
+      this.newValue += ".";
+      this.update();
+    }
   }
 
   changeButtonACtoC() {
