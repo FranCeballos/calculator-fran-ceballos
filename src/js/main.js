@@ -2,15 +2,16 @@
 
 const display = document.getElementById("display");
 const buttons = document.querySelectorAll("button");
+const clearBtn = document.getElementById("clear");
 
 class App {
   currentValue = 0;
   newValue;
   constructor() {
-    this._listenForButtonInput();
+    this._listenButtons();
   }
 
-  _listenForButtonInput() {
+  _listenButtons() {
     buttons.forEach((button) => {
       button.addEventListener("click", (e) => {
         const inputValue = e.target.dataset.value;
@@ -24,12 +25,34 @@ class App {
           this.update();
           return;
         }
+        if (inputValue === "clear") {
+          this.clearCurrentNumber();
+        }
       });
     });
   }
 
   update() {
     display.innerText = this.currentValue;
+
+    if (this.currentValue !== 0) {
+      this.changeButtonACtoC();
+    } else {
+      this.changeButtonCtoAC();
+    }
+  }
+
+  clearCurrentNumber() {
+    this.currentValue = 0;
+    this.update();
+  }
+
+  changeButtonACtoC() {
+    clearBtn.innerText = "C";
+  }
+
+  changeButtonCtoAC() {
+    clearBtn.innerText = "AC";
   }
 }
 

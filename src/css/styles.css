@@ -261,6 +261,10 @@ body {
   color: white;
 }
 
+.disable-dbl-tap-zoom {
+  touch-action: manipulation;
+}
+
 @media screen and (max-width: 768px) {
   button {
     font-size: 3vw;
