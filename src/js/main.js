@@ -39,11 +39,14 @@ class App {
       case ".":
         this.addDecimalDot();
         break;
+      case "%":
+        this.getPercentage();
+        break;
     }
   }
 
   update() {
-    display.innerText = this.newValue;
+    display.innerText = this.newValue.slice(0, 10);
     this.newValue !== "0" ? this.changeButtonACtoC() : this.changeButtonCtoAC();
   }
 
@@ -53,7 +56,12 @@ class App {
   }
 
   changeNumberSign() {
-    this.newValue = `${parseInt(this.newValue) * -1}`;
+    this.newValue = `${parseFloat(this.newValue) * -1}`;
+    this.update();
+  }
+
+  getPercentage() {
+    this.newValue = `${parseFloat(this.newValue) / 100}`;
     this.update();
   }
 
