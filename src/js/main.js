@@ -12,6 +12,7 @@ class App {
   newValue = "0";
   nextAction = "none";
   currentValue = "0";
+  tempValue = "0";
   constructor() {
     this._listenButtons();
   }
@@ -53,16 +54,16 @@ class App {
         this.handlePercentageClick();
         break;
       case "/":
-        this.handleDivideClick();
+        this.handleMathOperationClick(inputValue);
         break;
       case "*":
-        this.handleMultiplyClick();
+        this.handleMathOperationClick(inputValue);
         break;
       case "-":
-        this.handleSubtractClick();
+        this.handleMathOperationClick(inputValue);
         break;
       case "+":
-        this.handleAddClick();
+        this.handleMathOperationClick(inputValue);
         break;
       case "=":
         this.handleResultClick();
@@ -120,11 +121,38 @@ class App {
     this.updateDisplay();
   }
 
+  rearrangeMemoryValuesAfterResult(result) {
+    this.tempValue = this.newValue;
+    this.currentValue = result;
+    this.newValue = result;
+    this.updateDisplay();
+    this.newValue = this.tempValue;
+  }
+
+  // Math calculations
+  divide() {
+    const result = `${
+      parseFloat(this.currentValue) / parseFloat(this.newValue)
+    }`;
+    this.rearrangeMemoryValuesAfterResult(result);
+  }
+
+  multiply() {}
+
+  subtract() {}
+
+  add() {}
+
   // Click handlers
   handleClearClick() {
     this.changeButtonCtoAC();
     if (this.newValue !== "0") {
       this.newValue = "0";
+      if (this.tempValue !== "0") {
+        this.currentValue = "0";
+        this.nextAction = "none";
+        this.tempValue = "0";
+      }
       this.consoleLogMemory();
       this.updateDisplay();
       return;
@@ -159,55 +187,39 @@ class App {
     }
   }
 
-  handleDivideClick() {
+  handleMathOperationClick(nextOperation) {
     if (this.nextAction === "none") {
       this.setNewValueAsCurrentValue();
       this.newValue = "0";
     }
-    this.nextAction = "/";
-    this.updateNextActionButtonBorder();
-    this.consoleLogMemory();
-  }
-
-  handleMultiplyClick() {
-    if (this.nextAction === "none") {
-      this.setNewValueAsCurrentValue();
-      this.newValue = "0";
-    }
-    this.nextAction = "*";
-    this.updateNextActionButtonBorder();
-    this.consoleLogMemory();
-  }
-
-  handleSubtractClick() {
-    if (this.nextAction === "none") {
-      this.setNewValueAsCurrentValue();
-      this.newValue = "0";
-    }
-    this.nextAction = "-";
-    this.updateNextActionButtonBorder();
-    this.consoleLogMemory();
-  }
-
-  handleAddClick() {
-    if (this.nextAction === "none") {
-      this.setNewValueAsCurrentValue();
-      this.newValue = "0";
-    }
-    this.nextAction = "+";
+    this.nextAction = nextOperation;
     this.updateNextActionButtonBorder();
     this.consoleLogMemory();
   }
 
   handleResultClick() {
-    this.nextAction = "none";
-    this.updateNextActionButtonBorder();
+    switch (this.nextAction) {
+      case "/":
+        this.divide();
+        break;
+      case "*":
+        this.multiply();
+        break;
+      case "-":
+        this.subtract();
+        break;
+      case "+":
+        this.add();
+        break;
+    }
+    this.resetNextActionButtonBorder();
+    this.consoleLogMemory();
   }
 
   // Helpers
   consoleLogMemory() {
     console.log(
-      `newValue: ${this.newValue}, currentValue: ${this.currentValue}`
+      `newValue: ${this.newValue}, currentValue: ${this.currentValue}, tempValue: ${this.tempValue}, nextAction: ${this.nextAction}`
     );
   }
 }
