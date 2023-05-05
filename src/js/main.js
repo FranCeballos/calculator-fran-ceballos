@@ -196,6 +196,9 @@ class App {
   }
 
   handleChangeSignClick() {
+    if (this.signChanged) {
+      this.currentValue = this.newValue;
+    }
     const valueToChangeSign =
       this.tempValue !== "0" ? this.currentValue : this.newValue;
     this.newValue = `${parseFloat(valueToChangeSign) * -1}`;
@@ -218,6 +221,10 @@ class App {
   }
 
   handleDecimalClick() {
+    if (this.tempValue !== "0") {
+      this.newValue = this.currentValue;
+      this.tempValue = "0";
+    }
     if (!this.newValue.split("").includes(".")) {
       this.newValue += ".";
       this.consoleLogMemory();
@@ -232,6 +239,9 @@ class App {
     if (this.signChanged) {
       this.currentValue = this.newValue;
       this.signChanged = false;
+    }
+    if (this.tempValue === "0") {
+      this.setNewValueAsCurrentValue();
     }
     this.newValue = "0";
     this.tempValue = "0";
