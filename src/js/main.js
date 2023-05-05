@@ -33,7 +33,7 @@ class App {
       this.updateDisplay();
       return;
     }
-    if (!isNaN(inputValue) && this.newValue.length < 10) {
+    if (!isNaN(inputValue) && this.newValue !== "0") {
       this.newValue += inputValue;
       this.consoleLogMemory();
       this.changeButtonACtoC();
@@ -72,7 +72,13 @@ class App {
 
   // UI
   updateDisplay() {
-    display.innerText = this.newValue.slice(0, 10);
+    const parsedFloatNewValue = parseFloat(this.newValue);
+
+    this.countDecimals(Math.abs(parsedFloatNewValue)) < 8 &&
+    parsedFloatNewValue < 100000000 &&
+    parsedFloatNewValue > -100000000
+      ? (display.innerText = this.newValue)
+      : (display.innerText = parsedFloatNewValue.toExponential(4));
   }
 
   updateNextActionButtonBorder() {
@@ -137,15 +143,36 @@ class App {
     this.rearrangeMemoryValuesAfterResult(result);
   }
 
-  multiply() {}
+  multiply() {
+    const result = `${
+      parseFloat(this.currentValue) * parseFloat(this.newValue)
+    }`;
+    this.rearrangeMemoryValuesAfterResult(result);
+  }
 
-  subtract() {}
+  subtract() {
+    const result = `${
+      parseFloat(this.currentValue) - parseFloat(this.newValue)
+    }`;
+    this.rearrangeMemoryValuesAfterResult(result);
+  }
 
-  add() {}
+  add() {
+    const result = `${
+      parseFloat(this.currentValue) + parseFloat(this.newValue)
+    }`;
+    this.rearrangeMemoryValuesAfterResult(result);
+  }
 
   // Click handlers
   handleClearClick() {
     this.changeButtonCtoAC();
+    if (this.nextAction === "percentage") {
+      this.newValue = this.currentValue;
+      this.currentValue = "0";
+      this.nextAction = "none";
+      return;
+    }
     if (this.newValue !== "0") {
       this.newValue = "0";
       if (this.tempValue !== "0") {
@@ -174,7 +201,11 @@ class App {
   }
 
   handlePercentageClick() {
-    this.newValue = `${parseFloat(this.newValue) / 100}`;
+    this.currentValue !== "0"
+      ? (this.newValue = `${parseFloat(this.currentValue) / 100}`)
+      : (this.newValue = `${parseFloat(this.newValue) / 100}`);
+    this.currentValue = this.newValue;
+    this.nextAction = "percentage";
     this.consoleLogMemory();
     this.updateDisplay();
   }
@@ -190,8 +221,9 @@ class App {
   handleMathOperationClick(nextOperation) {
     if (this.nextAction === "none") {
       this.setNewValueAsCurrentValue();
-      this.newValue = "0";
     }
+    this.newValue = "0";
+    this.tempValue = "0";
     this.nextAction = nextOperation;
     this.updateNextActionButtonBorder();
     this.consoleLogMemory();
@@ -222,6 +254,18 @@ class App {
       `newValue: ${this.newValue}, currentValue: ${this.currentValue}, tempValue: ${this.tempValue}, nextAction: ${this.nextAction}`
     );
   }
+
+  countDecimals = function (number) {
+    if (Math.floor(number) === number) return 0;
+
+    const str = number.toString();
+    if (str.indexOf(".") !== -1 && str.indexOf("-") !== -1) {
+      return str.split("-")[1] || 0;
+    } else if (str.indexOf(".") !== -1) {
+      return str.split(".")[1].length || 0;
+    }
+    return str.split("-")[1] || 0;
+  };
 }
 
 const app = new App();
