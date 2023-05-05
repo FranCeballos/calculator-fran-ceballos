@@ -13,6 +13,7 @@ class App {
   nextAction = "none";
   currentValue = "0";
   tempValue = "0";
+  signChanged = false;
   constructor() {
     this._listenButtons();
   }
@@ -195,12 +196,18 @@ class App {
   }
 
   handleChangeSignClick() {
-    this.newValue = `${parseFloat(this.newValue) * -1}`;
+    const valueToChangeSign =
+      this.tempValue !== "0" ? this.currentValue : this.newValue;
+    this.newValue = `${parseFloat(valueToChangeSign) * -1}`;
+    this.signChanged = true;
     this.consoleLogMemory();
     this.updateDisplay();
   }
 
   handlePercentageClick() {
+    if (this.signChanged) {
+      this.currentValue = this.newValue;
+    }
     this.currentValue !== "0"
       ? (this.newValue = `${parseFloat(this.currentValue) / 100}`)
       : (this.newValue = `${parseFloat(this.newValue) / 100}`);
@@ -221,6 +228,10 @@ class App {
   handleMathOperationClick(nextOperation) {
     if (this.nextAction === "none") {
       this.setNewValueAsCurrentValue();
+    }
+    if (this.signChanged) {
+      this.currentValue = this.newValue;
+      this.signChanged = false;
     }
     this.newValue = "0";
     this.tempValue = "0";
@@ -244,6 +255,7 @@ class App {
         this.add();
         break;
     }
+    this.signChanged = false;
     this.resetNextActionButtonBorder();
     this.consoleLogMemory();
   }
